@@ -29,6 +29,7 @@
 #include "engine/graph_node.h"
 #include "level_table.h"
 #include "port/interpolation/FrameInterpolation.h"
+#include "port/hooks/list/EngineEvent.h"
 
 #define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS)
 
@@ -2852,6 +2853,10 @@ void set_camera_mode(struct Camera *c, s16 mode, s16 frames) {
     struct LinearTransitionPoint *start = &sModeInfo.transitionStart;
     struct LinearTransitionPoint *end = &sModeInfo.transitionEnd;
 
+    CALL_CANCELLABLE_EVENT(SetCameraMode) {
+        return;
+    }
+
     if (mode == CAMERA_MODE_WATER_SURFACE && gCurrLevelArea == AREA_TTM_OUTSIDE) {
     } else {
         // Clear movement flags that would affect the transition
@@ -3007,6 +3012,10 @@ void update_lakitu(struct Camera *c) {
  */
 void update_camera(struct Camera *c) {
     UNUSED u8 filler[24];
+
+    CALL_CANCELLABLE_EVENT(CameraUpdate, c) {
+        return;
+    }
 
     gCamera = c;
     update_camera_hud_status(c);
@@ -3431,6 +3440,8 @@ void init_camera(struct Camera *c) {
     gLakituState.nextYaw = gLakituState.yaw;
     c->yaw = gLakituState.yaw;
     c->nextYaw = gLakituState.yaw;
+
+    CALL_EVENT(CameraInit, c);
 }
 
 /**
