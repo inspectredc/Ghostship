@@ -3,7 +3,7 @@
 #define INIT_EVENT_IDS
 
 #include "sm64.h"
-#include "camera.h"
+#include "game/camera.h"
 #include "game/level_update.h"
 #include "menu/title_screen.h"
 #include "port/hooks/Events.h"
@@ -113,7 +113,7 @@ void PortEnhancements_Init() {
                 case CAMERA_MODE_CLOSE:
                 case CAMERA_MODE_RADIAL:
                 case CAMERA_MODE_8_DIRECTIONS:
-                case CAMERA_MODE_CLOSE:
+                case CAMERA_MODE_FREE_ROAM:
                     c->mode = CUSTOM_CAMERA_MODE(FREE_LOOK);
                     break;
             }
