@@ -104,23 +104,23 @@ void PortEnhancements_Init() {
         static bool wasActive = false;
 
         if (CVarGetInteger("gEnhancements.FreeLookCamera", 0)) {
+            static bool firstTimeEver = true;
+
+            if (firstTimeEver) {
+                firstTimeEver = false;
+                FreeLookCameraBoot();
+            }
             if (!wasActive) {
                 gCameraMovementFlags |= CAM_MOVE_INIT_CAMERA;
                 wasActive = true;
             }
 
+            uint8_t oldCameraMode = c->mode;
+
             switch (c->mode) {
-                case CAMERA_MODE_CLOSE:
-                case CAMERA_MODE_RADIAL:
-                case CAMERA_MODE_8_DIRECTIONS:
-                case CAMERA_MODE_FREE_ROAM:
+                default:
                     c->mode = CUSTOM_CAMERA_MODE(FREE_LOOK);
                     break;
-            }
-
-            if (gMarioState->action == ACT_SHOT_FROM_CANNON) {
-                gMarioState->area->camera->mode = CUSTOM_CAMERA_MODE(FREE_LOOK);
-                gLakituState.mode = CUSTOM_CAMERA_MODE(FREE_LOOK);
             }
 
             if (!IS_CUSTOM_CAMERA(c->mode)) {
@@ -130,6 +130,7 @@ void PortEnhancements_Init() {
 
             switch (c->mode) {
                 case CUSTOM_CAMERA_MODE(FREE_LOOK):
+                    c->mode = oldCameraMode;
                     FreeLookCameraUpdate(c);
                     break;
                 default:
