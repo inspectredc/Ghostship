@@ -90,10 +90,7 @@ void PortEnhancements_Init() {
         }
     });
 
-    REGISTER_LISTENER(SetCameraMode, EVENT_PRIORITY_NORMAL, [](IEvent* event) {
-
-        event->cancelled = true;
-    });
+    REGISTER_LISTENER(SetCameraMode, EVENT_PRIORITY_NORMAL, [](IEvent* event) { event->cancelled = true; });
 
     REGISTER_LISTENER(CameraUpdate, EVENT_PRIORITY_NORMAL, [](IEvent* event) {
         CameraUpdate* ev = (CameraUpdate*)event;
@@ -109,11 +106,11 @@ void PortEnhancements_Init() {
             FreeLookCameraUpdate(c);
             return;
         }
-        
+
         if (IS_CUSTOM_CAMERA(c->mode)) {
             c->mode = CAMERA_MODE_NONE;
         }
-        
+
         wasActive = false;
         event->cancelled = true;
     });
