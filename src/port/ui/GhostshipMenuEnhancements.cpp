@@ -124,6 +124,10 @@ void GhostshipMenu::AddMenuEnhancements() {
         .RaceDisable(false)
         .Options(CheckboxOptions().Tooltip("Disable Level of Detail (LOD) to avoid models using "
                                            "lower poly versions at a distance"));
+    AddWidget(path, "Free Look Camera", WIDGET_CVAR_CHECKBOX)
+        .CVar(CVAR_ENHANCEMENT("FreeLookCamera"))
+        .RaceDisable(false)
+        .Options(CheckboxOptions().Tooltip("Poor Implementation of puppycam"));
     AddWidget(path, "Select Any Star", WIDGET_CVAR_CHECKBOX)
         .CVar(CVAR_ENHANCEMENT("SelectAllStars"))
         .RaceDisable(false)

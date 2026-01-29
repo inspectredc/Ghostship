@@ -27,3 +27,11 @@ DEFINE_EVENT(GeoLayoutCallASM,
 );
 
 DEFINE_EVENT(LevelInitFromSaveFile);
+
+DEFINE_EVENT(SetCameraMode);
+DEFINE_EVENT(CameraUpdate,
+    struct Camera* c;
+);
+DEFINE_EVENT(CameraInit,
+    struct Camera* c;
+);

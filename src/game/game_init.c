@@ -559,6 +559,8 @@ void read_controller_inputs(void) {
         if (controller->controllerData != NULL) {
             controller->rawStickX = controller->controllerData->stick_x;
             controller->rawStickY = controller->controllerData->stick_y;
+            controller->rawRightStickX = controller->controllerData->right_stick_x;
+            controller->rawRightStickY = controller->controllerData->right_stick_y;
             controller->buttonPressed = controller->controllerData->button
                                         & (controller->controllerData->button ^ controller->buttonDown);
             // 0.5x A presses are a good meme
@@ -567,6 +569,8 @@ void read_controller_inputs(void) {
         } else { // otherwise, if the controllerData is NULL, 0 out all of the inputs.
             controller->rawStickX = 0;
             controller->rawStickY = 0;
+            controller->rawRightStickX = 0;
+            controller->rawRightStickY = 0;
             controller->buttonPressed = 0;
             controller->buttonDown = 0;
             controller->stickX = 0;

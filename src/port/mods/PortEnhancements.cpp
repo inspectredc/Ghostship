@@ -3,11 +3,20 @@
 #define INIT_EVENT_IDS
 
 #include "sm64.h"
+#include "game/camera.h"
 #include "game/level_update.h"
 #include "menu/title_screen.h"
 #include "port/hooks/Events.h"
 #include "assets/bin/segment2.h"
 #include "port/ShipInit.hpp"
+#include "camera/FreeLookCamera.h"
+
+typedef enum CustomCameraMode {
+    /* 0 */ CUSTOM_CAMERA_MODE_FREE_LOOK,
+} CustomCameraMode;
+
+#define CUSTOM_CAMERA_MODE(x) (CAMERA_MODE_MAX + CUSTOM_CAMERA_MODE_##x)
+#define IS_CUSTOM_CAMERA(m) ((m) >= CAMERA_MODE_MAX)
 
 static const Mtx matrix_patch_identity = {
     { { 1.0f, 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f } }
@@ -80,6 +89,49 @@ void PortEnhancements_Init() {
             gNeverEnteredCastle = false;
         }
     });
+
+    REGISTER_LISTENER(SetCameraMode, EVENT_PRIORITY_NORMAL, [](IEvent* event) {
+
+        event->cancelled = true;
+    });
+
+    REGISTER_LISTENER(CameraUpdate, EVENT_PRIORITY_NORMAL, [](IEvent* event) {
+        CameraUpdate* ev = (CameraUpdate*)event;
+        struct Camera* c = ev->c;
+        static bool wasActive = false;
+
+        if (CVarGetInteger("gEnhancements.FreeLookCamera", 0)) {
+            if (!wasActive) {
+                gCameraMovementFlags |= CAM_MOVE_INIT_CAMERA;
+                wasActive = true;
+            }
+
+            FreeLookCameraUpdate(c);
+            return;
+        }
+        
+        if (IS_CUSTOM_CAMERA(c->mode)) {
+            c->mode = CAMERA_MODE_NONE;
+        }
+        
+        wasActive = false;
+        event->cancelled = true;
+    });
+
+    REGISTER_LISTENER(CameraInit, EVENT_PRIORITY_NORMAL, [](IEvent* event) {
+        CameraUpdate* ev = (CameraUpdate*)event;
+        struct Camera* c = ev->c;
+        if (CVarGetInteger("gEnhancements.FreeLookCamera", 0)) {
+            static bool firstTimeEver = true;
+
+            if (firstTimeEver) {
+                firstTimeEver = false;
+                FreeLookCameraBoot();
+            }
+            FreeLookCameraInit(c);
+            return;
+        }
+    });
 }
 
 void PortEnhancements_Register() {
@@ -90,6 +142,9 @@ void PortEnhancements_Register() {
     REGISTER_EVENT(LevelScriptCallLoop);
     REGISTER_EVENT(LevelScriptBeginArea);
     REGISTER_EVENT(RenderPauseCourseOptions);
+    REGISTER_EVENT(SetCameraMode);
+    REGISTER_EVENT(CameraInit);
+    REGISTER_EVENT(CameraUpdate);
 
     REGISTER_EVENT(PlayerHealthChange);
     REGISTER_EVENT(PlayerLivesChange);
