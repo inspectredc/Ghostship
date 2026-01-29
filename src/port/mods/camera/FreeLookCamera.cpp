@@ -37,12 +37,10 @@ void FreeLookCameraBoot(void) {
 }
 
 void FreeLookCameraInit(struct Camera* c) {
-    // TODO!
     puppycam_init();
 }
 
 void FreeLookCameraUpdate(struct Camera* c) {
-    // TODO!
     UNUSED u8 unused[24];
 
     gPuppyCam.enabled = true;

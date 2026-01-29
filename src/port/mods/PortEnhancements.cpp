@@ -91,9 +91,6 @@ void PortEnhancements_Init() {
     });
 
     REGISTER_LISTENER(SetCameraMode, EVENT_PRIORITY_NORMAL, [](IEvent* event) {
-        if (CVarGetInteger("gEnhancements.FreeLookCamera", 0)) {
-            return;
-        }
 
         event->cancelled = true;
     });
@@ -104,40 +101,12 @@ void PortEnhancements_Init() {
         static bool wasActive = false;
 
         if (CVarGetInteger("gEnhancements.FreeLookCamera", 0)) {
-            static bool firstTimeEver = true;
-
-            if (firstTimeEver) {
-                firstTimeEver = false;
-                FreeLookCameraBoot();
-            }
             if (!wasActive) {
                 gCameraMovementFlags |= CAM_MOVE_INIT_CAMERA;
                 wasActive = true;
             }
 
-            uint8_t oldCameraMode = c->mode;
-
-            switch (c->mode) {
-                default:
-                    c->mode = CUSTOM_CAMERA_MODE(FREE_LOOK);
-                    break;
-            }
-
-            if (!IS_CUSTOM_CAMERA(c->mode)) {
-                event->cancelled = true;
-                return;
-            }
-
-            switch (c->mode) {
-                case CUSTOM_CAMERA_MODE(FREE_LOOK):
-                    c->mode = oldCameraMode;
-                    FreeLookCameraUpdate(c);
-                    break;
-                default:
-                    break;
-            }
-
-
+            FreeLookCameraUpdate(c);
             return;
         }
         
@@ -153,6 +122,12 @@ void PortEnhancements_Init() {
         CameraUpdate* ev = (CameraUpdate*)event;
         struct Camera* c = ev->c;
         if (CVarGetInteger("gEnhancements.FreeLookCamera", 0)) {
+            static bool firstTimeEver = true;
+
+            if (firstTimeEver) {
+                firstTimeEver = false;
+                FreeLookCameraBoot();
+            }
             FreeLookCameraInit(c);
             return;
         }

@@ -73,7 +73,7 @@ static const struct gPCOptionStruct
 
 static const struct gPCOptionStruct gPCOptions[]=
 { //If the min and max are 0 and 1, then the value text is used, otherwise it's ignored.
-    {/*Option Name*/ 0, /*Option Variable*/ &gPuppyCam.options.analogue,       /*Option Value Text Start*/ 1, /*Option Minimum*/ FALSE, /*Option Maximum*/ TRUE},
+    {/*Option Name*/ 0, /*Option Variable*/ &gPuppyCam.options.analogue,       /*Option Value Text Start*/ 0, /*Option Minimum*/ FALSE, /*Option Maximum*/ TRUE},
     {/*Option Name*/ 6, /*Option Variable*/ &gPuppyCam.options.inputType,       /*Option Value Text Start*/ 2, /*Option Minimum*/ 0, /*Option Maximum*/ 2},
     {/*Option Name*/ 1, /*Option Variable*/ &gPuppyCam.options.sensitivityX,   /*Option Value Text Start*/ 255, /*Option Minimum*/ 10, /*Option Maximum*/ 500},
     {/*Option Name*/ 2, /*Option Variable*/ &gPuppyCam.options.sensitivityY,   /*Option Value Text Start*/ 255, /*Option Minimum*/ 10, /*Option Maximum*/ 500},
@@ -99,7 +99,6 @@ s16 LENCOS(s16 length, s16 direction)
 
 static void puppycam_analogue_stick(void)
 {
-    // #ifdef TARGET_N64
     if (!gPuppyCam.options.analogue)
         return;
 
@@ -117,7 +116,6 @@ static void puppycam_analogue_stick(void)
         gPuppyCam.stick2[1] = 0;
         gPuppyCam.stickN[1] = 0;
     }
-    // #endif
 }
 
 void puppycam_default_config(void)
@@ -145,7 +143,6 @@ void puppycam_boot(void)
     gPuppyMemoryPool = mem_pool_init(MAX_PUPPYCAM_VOLUMES * sizeof(struct sPuppyVolume), MEMORY_POOL_LEFT);
     gPuppyVolumeCount = 0;
     gPuppyCam.enabled = 1;
-
     puppycam_default_config();
 
     // puppycam_get_save();
